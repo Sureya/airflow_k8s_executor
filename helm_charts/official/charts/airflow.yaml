@@ -1,0 +1,54 @@
+airflow:
+  image:
+     repository: airflow-docker-local
+     tag: 1
+  executor: Kubernetes
+  service:
+    type: LoadBalancer
+
+  config:
+    AIRFLOW__CORE__EXECUTOR: KubernetesExecutor
+    AIRFLOW__CORE__LOGGING_LEVEL: INFO
+    AIRFLOW__CORE__FERNET_KEY: -VPrAtf3PunVqdBKdURvTnbn0VYOJfBqivkz9N3K2qo=
+    AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://postgres:airflow@airflow-postgresql:5432/airflow
+    AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://postgres:airflow@airflow-postgresql:5432/airflow
+    AIRFLOW__CELERY__BROKER_URL: redis://:airflow@airflow-redis-master:6379/0
+    AIRFLOW__CORE__LOAD_EXAMPLES: True
+
+    # Remote Logging
+    AIRFLOW__CORE__REMOTE_LOGGING: False
+
+    AIRFLOW__WEBSERVER__EXPOSE_CONFIG: True
+    AIRFLOW__WEBSERVER__LOG_FETCH_TIMEOUT_SEC: 30
+    AIRFLOW__KUBERNETES__WORKER_CONTAINER_REPOSITORY: airflow-docker-local
+    AIRFLOW__KUBERNETES__WORKER_CONTAINER_TAG: 1
+    AIRFLOW__KUBERNETES__WORKER_CONTAINER_IMAGE_PULL_POLICY: IfNotPresent
+    AIRFLOW__KUBERNETES__WORKER_SERVICE_ACCOUNT_NAME: airflow
+    AIRFLOW__KUBERNETES__DAGS_VOLUME_CLAIM: airflow
+    AIRFLOW__KUBERNETES__LOGS_VOLUME_CLAIM: airflow-logs
+    AIRFLOW__KUBERNETES__NAMESPACE: airflow
+    AIRFLOW__KUBERNETES__DELETE_WORKER_PODS: False
+    AIRFLOW__KUBERNETES__KUBE_CLIENT_REQUEST_ARGS: '{\"_request_timeout\":[60, 60]}'
+
+persistence:
+  enabled: true
+  existingClaim: ''
+  accessMode: ReadWriteOnce
+  size: 1Gi
+
+logsPersistence:
+  enabled: true
+  existingClaim: ''
+  accessMode: ReadWriteOnce
+  size: 1Gi
+
+
+workers:
+  enabled: true
+
+postgresql:
+  enabled: true
+  size: 5Gi
+
+redis:
+  enabled: true

@@ -1,0 +1,4 @@
+
+1) Create  a DAG which takes a string parameter
+2) Each task should be a DockerOperator which takes parameters [file_name, task_name]
+    * file_name -> should be passed from the XCom from previous task
