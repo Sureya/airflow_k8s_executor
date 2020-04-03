@@ -16,7 +16,7 @@ class S3Utils:
     def __init__(self, bucket_name):
         logging.info("Initialising S3 Bucket")
         self.bucket_name = bucket_name
-        self.session = boto3.Session(profile_name='ore')
+        self.session = boto3.Session(profile_name='default')
         self.s3 = self.session.resource('s3')
 
     def read_file(self, key):
@@ -120,10 +120,3 @@ if __name__ == '__main__':
     args = parser.parse_args()
     process = CountryProcessor(s3_file_name=args.s3_file,
                                task_name=args.task_name)
-
-
-"""
-1 ->  python country_processing.py --s3_file="sks-airflow-logs/airflow-poc/run_001/input/countries.csv" --task_name="apply_lower"
-2 ->  python country_processing.py --s3_file="sks-airflow-logs/airflow-poc/run_001/apply_lower/output.csv" --task_name="apply_code"
-3 ->  python country_processing.py --s3_file="sks-airflow-logs/airflow-poc/run_001/apply_code/output.csv" --task_name="apply_currency" 
-"""
