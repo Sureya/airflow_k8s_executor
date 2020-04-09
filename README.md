@@ -31,7 +31,8 @@ $ kubectl get pods --watch # to monitor the pod health
 $ minikube dashboard  # to get the K8S dashboard
 
 # If this URL doesn't load wait for few mins until the K8S dashboard becomes healthy. (usually takes 6-10 minutes)
-$ minikube service airflow-web -n airflow # to load the Airflow UI page 
+
+minikube service airflow-web -n airflow # to load the Airflow UI page; you might need to wait ~1-2 minutes for the service to start
 
 # Once you are done with the services you can stop all the services using following command 
 $ make cleanup
