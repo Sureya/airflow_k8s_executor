@@ -5,7 +5,13 @@ airflow:
   executor: Kubernetes
   service:
     type: LoadBalancer
-
+  dags:
+    persistence:
+      enabled: false
+    git:
+      url: https://github.com/apache/airflow
+      branch: master
+      subpath: airflow/example_dags
   config:
     AIRFLOW__CORE__EXECUTOR: KubernetesExecutor
     AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: True
@@ -33,13 +39,13 @@ airflow:
     AIRFLOW__KUBERNETES__KUBE_CLIENT_REQUEST_ARGS: '{\"_request_timeout\":[60, 60]}'
 
 persistence:
-  enabled: true
+  enabled: false
   existingClaim: ''
   accessMode: ReadWriteOnce
   size: 1Gi
 
 logsPersistence:
-  enabled: true
+  enabled: false
   existingClaim: ''
   accessMode: ReadWriteOnce
   size: 1Gi

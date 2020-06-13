@@ -66,7 +66,7 @@ cd src
 docker build -t country . 
 
 # To Run the application locally execute the following command 
-$ docker run -v ~/.aws:/app/credentials -e S3_FILE_NAME="{BUCKET_NAME}/airflow-poc/run_001/input/countries.csv" -e TASK_NAME="apply_lower"  country
-$ docker run -v ~/.aws:/app/credentials -e S3_FILE_NAME="{BUCKET_NAME}/airflow-poc/run_001/input/countries.csv" -e TASK_NAME="apply_code"  country
-$ docker run -v ~/.aws:/app/credentials -e S3_FILE_NAME="{BUCKET_NAME}/airflow-poc/run_001/input/countries.csv" -e TASK_NAME="apply_currency"  country
+$ docker run -v ~/.aws:/app/credentials -e S3_FILE_NAME="sks-airflow-logs/airflow-poc/run_001/input/countries.csv" -e TASK_NAME="apply_lower"  country
+$ docker run -v ~/.aws:/app/credentials -e S3_FILE_NAME="sks-airflow-logs/airflow-poc/run_001/input/countries.csv" -e TASK_NAME="apply_code"  country
+$ docker run -v ~/.aws:/app/credentials -e S3_FILE_NAME="sks-airflow-logs/airflow-poc/run_001/input/countries.csv" -e TASK_NAME="apply_currency"  country
 ```

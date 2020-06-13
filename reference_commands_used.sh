@@ -5,7 +5,7 @@ set -e
 # These commands are just for reference
 
 # Step-1 Create minikube cluster
-minikube start --vm-driver=virtualbox --memory=6096 --disk-size=20000mb --kubernetes-version v1.15.0
+minikube start --vm-driver=virtualbox --memory=6096 --disk-size=20000mb --kubernetes-version v1.17.1
 eval $(minikube docker-env)
 
 # Step-2 create airflow namespace in Kubectl

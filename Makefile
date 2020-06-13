@@ -26,6 +26,7 @@ build-helm:
 	./load_dags.sh $(AIRFLOW_DAGS_PATH)
 
 start:
+	make cleanup
 	make build-image
 	make build-helm
 
@@ -34,6 +35,6 @@ restart:
 	make start
 
 cleanup:
-	helm delete airflow || true
-	minikube delete
+	-helm delete airflow
+	-minikube delete
 
