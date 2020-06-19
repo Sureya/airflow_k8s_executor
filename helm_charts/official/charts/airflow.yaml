@@ -5,21 +5,15 @@ airflow:
   executor: Kubernetes
   service:
     type: LoadBalancer
-  dags:
-    persistence:
-      enabled: false
-    git:
-      url: https://github.com/apache/airflow
-      branch: master
-      subpath: airflow/example_dags
+
   config:
     AIRFLOW__CORE__EXECUTOR: KubernetesExecutor
     AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: True
     AIRFLOW__SCHEDULER__CATCHUP_BY_DEFAULT: False
     AIRFLOW__CORE__LOGGING_LEVEL: INFO
     AIRFLOW__CORE__FERNET_KEY: -VPrAtf3PunVqdBKdURvTnbn0VYOJfBqivkz9N3K2qo=
-    AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://postgres:airflow@airflow-postgresql:5432/airflow
-    AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://postgres:airflow@airflow-postgresql:5432/airflow
+    AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql://developer:developer@ore.crca4ssbk7go.eu-west-1.rds.amazonaws.com/ore?connect_timeout=10
+    AIRFLOW__CELERY__RESULT_BACKEND: postgresql://developer:developer@ore.crca4ssbk7go.eu-west-1.rds.amazonaws.com/ore?connect_timeout=10
     AIRFLOW__CELERY__BROKER_URL: redis://:airflow@airflow-redis-master:6379/0
     AIRFLOW__CORE__LOAD_EXAMPLES: False
 
@@ -40,23 +34,39 @@ airflow:
 
 persistence:
   enabled: false
-  existingClaim: ''
-  accessMode: ReadWriteOnce
-  size: 1Gi
 
 logsPersistence:
   enabled: false
-  existingClaim: ''
-  accessMode: ReadWriteOnce
-  size: 1Gi
 
 
 workers:
   enabled: true
 
 postgresql:
-  enabled: true
-  size: 5Gi
+  enabled: false
 
 redis:
   enabled: true
+
+dags:
+  git:
+    url: ssh://git@github.com:apache/airflow.git
+    repoHost: github.com
+    secret: airflow-git-keys
+    privateKeyName: id_rsa
+
+    gitSync:
+      enabled: true
+      refreshTime: 60
+
+externalDatabase:
+  type: postgres
+  host: ore.crca4ssbk7go.eu-west-1.rds.amazonaws.com
+  port: 5432
+  database: ore
+  user: developer
+  passwordSecret: "airflow-postgres-password"
+  passwordSecretKey: "developer"
+
+
+  git_repo and git_branch and git_dags_folder_mount_point

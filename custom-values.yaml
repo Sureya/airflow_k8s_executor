@@ -1,0 +1,120 @@
+# External Dependencies:
+# - A PUBLIC git repo for DAGs: ssh://git@repo.example.com:my-airflow-dags.git
+#
+
+###################################
+# Airflow - Common Configs
+###################################
+airflow:
+  executor: Kubernetes
+  fernetKey: "7T512UXSSmBOkpWimFHIVb8jK6lfmSAvx4mO6Arehnc="
+
+  config:
+    AIRFLOW__CORE__EXECUTOR: KubernetesExecutor
+    AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: True
+    AIRFLOW__SCHEDULER__CATCHUP_BY_DEFAULT: False
+    AIRFLOW__CORE__LOGGING_LEVEL: INFO
+    AIRFLOW__CORE__FERNET_KEY: -VPrAtf3PunVqdBKdURvTnbn0VYOJfBqivkz9N3K2qo=
+    AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql://developer:developer@ore.crca4ssbk7go.eu-west-1.rds.amazonaws.com/ore?connect_timeout=10
+    AIRFLOW__CELERY__RESULT_BACKEND: postgresql://developer:developer@ore.crca4ssbk7go.eu-west-1.rds.amazonaws.com/ore?connect_timeout=10
+    AIRFLOW__CELERY__BROKER_URL: redis://:airflow@airflow-redis-master:6379/0
+
+    # DAGS
+    AIRFLOW__CORE__LOAD_EXAMPLES: "False"
+    AIRFLOW__SCHEDULER__DAG_DIR_LIST_INTERVAL: "30"
+
+    #Remote Logging
+    AIRFLOW__CORE__REMOTE_LOGGING: "True"
+    AIRFLOW__CORE__REMOTE_BASE_LOG_FOLDER: "s3://sks-airflow-logs/logs"
+    AIRFLOW__CORE__REMOTE_LOG_CONN_ID: "personal_aws"
+
+    # K8S
+    AIRFLOW__KUBERNETES__GIT_REPO: "https://github.com/apache/airflow/tree/master/airflow/example_dags"
+    AIRFLOW__KUBERNETES__GIT_BRANCH: "master"
+    AIRFLOW__KUBERNETES__GIT_DAGS_FOLDER_MOUNT_POINT: "/opt/airflow/dags"
+
+    ## Disable noisy "Handling signal: ttou" Gunicorn log messages
+    GUNICORN_CMD_ARGS: "--log-level WARNING"
+
+
+###################################
+# Airflow - Scheduler Configs
+###################################
+scheduler:
+  connections:
+    - id: personal_aws
+      type: aws
+      extra: |
+        {
+          "aws_access_key_id": "AKIA4JUN2OFPZ5CX373W",
+          "aws_secret_access_key": "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",
+          "region_name":"eu-west-2"
+        }
+
+  variables: |
+    { "environment": "dev" }
+
+  pools: |
+    {
+      "example": {
+        "description": "This is an example pool with 2 slots.",
+        "slots": 2
+      }
+    }
+
+###################################
+# Airflow - WebUI Configs
+###################################
+web:
+  service:
+    type: NodePort
+
+
+###################################
+# Airflow - Worker Configs
+###################################
+workers:
+  replicas: 1
+
+
+###################################
+# Airflow - DAGs Configs
+###################################
+dags:
+  ## configs for the DAG git repository & sync container
+  ##
+  git:
+    sshKeyscan: 'True'
+    url: "https://github.com/apache/airflow.git"
+    ref: master
+#    secret: "airflow-git-keys"
+#    privateKeyName: id_rsa
+    repoHost: "www.github.com"
+#    repoPort: 22
+
+    ## configs for the git-sync container
+    ##
+    gitSync:
+      enabled: true
+      refreshTime: 60
+
+###################################
+# Database - PostgreSQL Chart
+###################################
+postgresql:
+  enabled: false
+
+###################################
+# Database - Redis Chart
+###################################
+redis:
+  enabled: true
+
+externalDatabase:
+  type: postgres
+  host: ore.crca4ssbk7go.eu-west-1.rds.amazonaws.com
+  port: 5432
+  database: ore
+  user: developer
+  passwordSecret: "airflow-postgres-password"
+  passwordSecretKey: "developer"

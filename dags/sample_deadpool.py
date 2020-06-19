@@ -1,6 +1,7 @@
 from airflow import DAG
 from datetime import datetime, timedelta
-from airflow.contrib.operators.kubernetes_pod_operator import KubernetesPodOperator
+from airflow.contrib.operators.kubernetes_pod_operator import \
+    KubernetesPodOperator
 from airflow.operators.dummy_operator import DummyOperator
 from airflow.operators.subdag_operator import SubDagOperator
 from airflow.executors import get_default_executor
@@ -49,8 +50,12 @@ def load_subdag(parent_dag_name, child_dag_name, args):
                 namespace=namespace,
                 image="sureya/country-processing:v1",
                 labels={"foo": "bar"},
-                arguments=["-e S3_FILE_NAME=sks-airflow-logs/airflow-poc/run_001/input/countries.csv",  "-e TASK_NAME=apply_lower"],
-                env_vars={'AWS_ACCESS_KEY_ID': 'AKIA4JUN2OFPZ5CX373W', 'AWS_SECRET_ACCESS_KEY':'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', 'AWS_DEFAULT_REGION': 'eu-west-2'},
+                arguments=[
+                    "-e S3_FILE_NAME=sks-airflow-logs/airflow-poc/run_001/input/countries.csv",
+                    "-e TASK_NAME=apply_lower"],
+                env_vars={'AWS_ACCESS_KEY_ID': 'X',
+                          'AWS_SECRET_ACCESS_KEY': 'X',
+                          'AWS_DEFAULT_REGION': 'eu-west-2'},
                 name="apply_lower_case",
                 task_id="apply_lower_case",
                 in_cluster=in_cluster,
@@ -89,4 +94,3 @@ with dag:
     )
 
     load_tasks >> format_results
-

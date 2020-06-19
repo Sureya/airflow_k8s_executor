@@ -10,7 +10,7 @@ export AIRFLOW_HELM_CHART ?= $(BASE_PATH)/helm_charts/official/charts/airflow.ya
 
 
 
-build-image:
+init:
 	minikube start --vm-driver=virtualbox --memory=6096 --disk-size=20000mb --kubernetes-version v1.15.0
 	@eval $$(minikube docker-env) ;\
 	kubectl config set-context minikube --cluster=minikube --namespace=airflow; \
@@ -18,12 +18,12 @@ build-image:
 	kubectl create namespace airflow ; \
 	docker build -t airflow-docker-local:1  $(AIRFLOW_DOCKER_PATH) --no-cache
 
-build-helm:
+build:
 	@eval $$(minikube docker-env) ; \
 	helm delete airflow || true ; \
 	helm dependency build $(AIRFLOW_HELM_PATH) ; \
 	helm install airflow  -f $(AIRFLOW_HELM_CHART) $(AIRFLOW_HELM_PATH)
-	./load_dags.sh $(AIRFLOW_DAGS_PATH)
+#	./load_dags.sh $(AIRFLOW_DAGS_PATH)
 
 start:
 	make cleanup
