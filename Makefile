@@ -11,7 +11,7 @@ export AIRFLOW_HELM_CHART ?= $(BASE_PATH)/helm_charts/official/charts/airflow.ya
 
 
 build:
-	minikube start --vm-driver=virtualbox --memory=6096 --disk-size=20000mb --kubernetes-version v1.15.0
+	minikube start --vm-driver=virtualbox --cpus=8 --memory=8096 --disk-size=20000mb --kubernetes-version v1.15.0
 	@eval $$(minikube docker-env) ;\
 	kubectl config set-context minikube --cluster=minikube --namespace=airflow; \
 	kubectl delete namespace airflow || true ; \
