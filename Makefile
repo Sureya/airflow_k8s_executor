@@ -1,4 +1,4 @@
-.PHONY: build-image build-helm
+.PHONY: build deploy run redeploy restart cleanup dags
 .ONESHELL:
 
 
@@ -44,5 +44,5 @@ cleanup:
 	minikube delete
 
 dags:
-	./load_dags.sh $(AIRFLOW_DAGS_PATH) 1
+	bash $(BASH)/load_dags.sh $(AIRFLOW_DAGS_PATH) 1
 
